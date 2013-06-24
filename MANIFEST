@@ -1,0 +1,14 @@
+Changes
+Makefile.PL
+MANIFEST
+README
+t/WWW-Deezer.t
+t/WWW-Deezer-Album.t
+t/WWW-Deezer-Artist.t
+t/WWW-Deezer-SearchResult.t
+lib/WWW/Deezer.pm
+lib/WWW/Deezer/Album.pm
+lib/WWW/Deezer/Artist.pm
+lib/WWW/Deezer/Obj.pm
+lib/WWW/Deezer/SearchResult.pm
+lib/WWW/Deezer/Track.pm

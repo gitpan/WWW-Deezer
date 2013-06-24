@@ -1,0 +1,6 @@
+Revision history for Perl extension WWW::Deezer.
+
+0.01  Mon Jun 24 13:50:31 2013
+	- original version; created by h2xs 1.23 with options
+		-X WWW::Deezer
+
