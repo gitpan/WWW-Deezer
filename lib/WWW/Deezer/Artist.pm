@@ -1,6 +1,9 @@
 package WWW::Deezer::Artist;
 
+our $VERSION = '0.02';
+
 use Moose;
+use Moose::Util::TypeConstraints;
 
 extends 'WWW::Deezer::Obj';
 
@@ -15,7 +18,12 @@ has 'link', is => 'ro', isa => 'Str';
 has 'picture', is => 'ro', isa => 'Str';
 has 'nb_album', is => 'rw', isa => 'Int';
 has 'nb_fan', is => 'rw', isa => 'Int';
-has 'radio', is => 'ro'; # should be bool, need coerce from JSON::XS::Boolean=\1
+
+has 'radio' => (
+    is => 'ro',
+    isa => 'JSONBoolean',
+    coerce => 1
+);
 
 around BUILDARGS => sub { # allow create Artist object with single argument passed to constructor - deezer ID
     my ($orig, $class) = (shift, shift);
@@ -32,32 +40,18 @@ around BUILDARGS => sub { # allow create Artist object with single argument pass
     return $self;
 };
 
-around nb_fan => sub {
+around [qw/nb_fan nb_album/] => sub { # add here another attributes which need fetching from server
     my ($orig, $self) = (shift, shift);
-    my $fans = $self->$orig(@_);
-    
-    unless ($fans) {
+    my $attr = $self->$orig(@_);
+
+    unless (defined $attr) {
         # fetch recreate artist.
         my $new_obj = $self->deezer_obj->artist($self->id);
-        $fans = $new_obj->$orig(@_);
+        $attr= $new_obj->$orig(@_);
         $self->reinit_attr_values($new_obj);
     }
 
-    return $fans;
-};
-
-around nb_album => sub {
-    my ($orig, $self) = (shift, shift);
-    my $albums = $self->$orig(@_);
-
-    unless ($albums) {
-        # fetch recreate artist.
-        my $new_obj = $self->deezer_obj->artist($self->id);
-        $albums = $new_obj->$orig(@_);
-        $self->reinit_attr_values($new_obj);
-    }
-
-    return $albums;
+    return $attr;
 };
 
 sub top {

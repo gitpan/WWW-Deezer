@@ -1,6 +1,9 @@
 package WWW::Deezer::Track;
 
+our $VERSION = '0.02';
+
 use Moose;
+use Moose::Util::TypeConstraints;
 
 extends 'WWW::Deezer::Obj';
 

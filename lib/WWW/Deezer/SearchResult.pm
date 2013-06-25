@@ -1,5 +1,7 @@
 package WWW::Deezer::SearchResult;
 
+our $VERSION = '0.01';
+
 use Moose;
 
 use WWW::Deezer::Track;

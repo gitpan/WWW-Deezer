@@ -1,6 +1,9 @@
 package WWW::Deezer::Album;
 
+our $VERSION = '0.02';
+
 use Moose;
+use Moose::Util::TypeConstraints;
 
 extends 'WWW::Deezer::Obj';
 
@@ -38,54 +41,24 @@ around BUILDARGS => sub { # allow create Album object with single argument passe
         $self = WWW::Deezer->new->album($_[0]);
     }
     else {
-        # 2DO: deal with Bool and JSON::XS::Boolean=\1 in 'radio' argument
         $self = $class->$orig(@_);
     }
     return $self;
 };
 
-around release_date => sub {
+around [qw/genre_id link release_date/] => sub { # add here another attributes which need fetching from server
     my ($orig, $self) = (shift, shift);
-    my $date = $self->$orig(@_);
-
-    unless ($date) {
+    my $attr = $self->$orig(@_);
+    
+    unless (defined $attr) { 
         # fetch recreate album.
         my $new_obj = $self->deezer_obj->album($self->id);
-        $date = $new_obj->$orig(@_);
+        $attr= $new_obj->$orig(@_);
         $self->reinit_attr_values($new_obj);
     }
-
-    return $date;
+    
+    return $attr;
 };
-
-around link => sub {
-    my ($orig, $self) = (shift, shift);
-    my $date = $self->$orig(@_);
-
-    unless ($date) {
-        # fetch recreate album.
-        my $new_obj = $self->deezer_obj->album($self->id);
-        $date = $new_obj->$orig(@_);
-        $self->reinit_attr_values($new_obj);
-    }
-
-    return $date;
-};
-
-around genre_id => sub {
-    my ($orig, $self) = (shift, shift);
-    my $date = $self->$orig(@_);
-
-    unless ($date) {
-        # fetch recreate album.
-        my $new_obj = $self->deezer_obj->album($self->id);
-        $date = $new_obj->$orig(@_);
-        $self->reinit_attr_values($new_obj);
-    }
-
-    return $date;
-};
-
 
 sub comments {
     my $self = shift;

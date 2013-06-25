@@ -11,7 +11,8 @@ use URI::Escape;
 use WWW::Deezer::SearchResult;
 use WWW::Deezer::Artist;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
+our $API_VERSION = '2.0';
 
 sub new {
     my ($class, $params) = @_;
@@ -20,7 +21,7 @@ sub new {
 #       if ref($params) ne ref {};
 
     my $self = {
-        baseurl => 'http://api.deezer.com/2.0/',
+        baseurl => "http://api.deezer.com/$API_VERSION/",
         ua      => LWP::UserAgent->new,
         json    => JSON->new->allow_nonref,
         debug   => 0,
@@ -138,10 +139,13 @@ WWW::Deezer - Perl interface to Deezer API
   my $rs2 = $deezer->search ({ q => 'Antonio Vivaldi Concerto No. 4', order => 'RATING_DESC' });
 
   while (my $record = $rs1->next) {
-      my $album_obj = $record->album;
-      my $artist = $record->artist;
-      my $name = $artist->name;
-      my $fans_count = $artist->nb_fans;
+      $album_obj = $record->album;
+      $artist = $record->artist;
+      $name = $artist->name;
+
+      warn ("$name has a radio channel!") if $artist->radio;
+
+      $fans_count = $artist->nb_fans;
   }
 
   my $top_record = $rs2->first;

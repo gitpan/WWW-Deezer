@@ -1,8 +1,18 @@
 package WWW::Deezer::Obj;
 
+our $VERSION = '0.02';
+
 use Moose;
+use Moose::Util::TypeConstraints;
 
 # base class for representing Deezer objects;
+
+subtype 'JSONBoolean' => (as 'Int');
+
+coerce 'JSONBoolean' => (
+    from 'Ref',
+    via { JSON::is_bool($_) }
+);
 
 has 'deezer_obj', is => 'rw', isa => 'Ref';
 
